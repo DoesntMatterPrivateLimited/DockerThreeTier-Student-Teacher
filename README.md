@@ -173,3 +173,9 @@ npm run build
 # Run the frontend tests once
 npm test -- --watchAll=false
 ```
+
+<img width="1312" height="693" alt="image" src="https://github.com/user-attachments/assets/687c0713-170c-4e20-86f6-6ccd12c3619f" />
+<img width="1319" height="657" alt="image" src="https://github.com/user-attachments/assets/f868f399-96eb-41a6-b77c-c66363d3438b" />
+<img width="1312" height="687" alt="image" src="https://github.com/user-attachments/assets/6234c996-7f1f-4803-92bc-b3ad1ea3ea04" />
+
+
