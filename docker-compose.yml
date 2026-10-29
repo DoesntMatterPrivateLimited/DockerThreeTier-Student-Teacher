@@ -1,0 +1,68 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: student_teacher_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - three-tier-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: database-container
+    restart: unless-stopped
+    environment:
+      PORT: "3500"
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: rootpassword
+      DB_NAME: student_teacher_db
+    ports:
+      - "3500:3500"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - three-tier-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_BASE_URL: http://localhost:3500
+    container_name: frontend-container
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - three-tier-network
+
+networks:
+  three-tier-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
